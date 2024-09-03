@@ -13,7 +13,7 @@ const DelayedImage = (props: { delay: number; showSkeleton: boolean }) => {
 
   const ImageSkeleton = () => (
     <div className="animate-pulse">
-      <div className="h-64 bg-gray-700 rounded-lg"></div>
+      <div className="h-auto bg-gray-700 rounded-lg" style={{ aspectRatio: "600/800" }}></div>
     </div>
   );
 
