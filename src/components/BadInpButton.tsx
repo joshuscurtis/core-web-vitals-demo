@@ -12,7 +12,7 @@ const BadINPButton = (props: { delay: number }) => {
     // Simulate a heavy computation
     const startTime = Date.now();
     while (Date.now() - startTime < delay) {
-      // Busy wait for 3 seconds
+      console.log("waiting...");
     }
 
     setIsLoading(false);
