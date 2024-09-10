@@ -1,28 +1,21 @@
 import { useState, useEffect } from "react";
 import DelayedImage from "./components/DelayedImage";
+
 import BadINPButton from "./components/BadInpButton";
 
-function App() {
+const App = () => {
   const [imageDelay, setImageDelay] = useState(2000);
-  const [buttonDelay, setButtonDelay] = useState(250);
   const [showSkeleton, setShowSkeleton] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const imageDelay = params.get("imageDelay");
-    const buttonDelay = params.get("buttonDelay");
     const skeleton = params.get("skeleton");
 
     if (imageDelay) {
       const parsedDelay = parseInt(imageDelay, 10);
       if (!isNaN(parsedDelay) && parsedDelay >= 0) {
         setImageDelay(parsedDelay);
-      }
-    }
-    if (buttonDelay) {
-      const parsedDelay = parseInt(buttonDelay, 10);
-      if (!isNaN(parsedDelay) && parsedDelay >= 0) {
-        setButtonDelay(parsedDelay);
       }
     }
     setShowSkeleton(skeleton === "true");
@@ -53,21 +46,27 @@ function App() {
               <h2 className="text-2xl font-bold text-white">INP Demo</h2>
             </div>
 
-            <div className="p-6">
-              <BadINPButton testId={"inp-button-low"} delay={5} />
+            <div className="p-6 space-y-4">
+              <BadINPButton
+                testId="inp-button-good"
+                delay={50}
+                label="Good INP (50ms)"
+              />
+              <BadINPButton
+                testId="inp-button-needs-improvement"
+                delay={200}
+                label="Needs Improvement INP (200ms)"
+              />
+              <BadINPButton
+                testId="inp-button-poor"
+                delay={500}
+                label="Poor INP (500ms)"
+              />
             </div>
-            <div className="p-6">
-              <BadINPButton testId={"inp-button-med"} delay={300} />
-            </div>
-            <div className="p-6">
-              <BadINPButton testId={"inp-button-high"} delay={800} />
-            </div>
-            <p className="mt-4 text-center text-white">
-              Button delay: {buttonDelay}ms
-            </p>
-            <p className="text-sm pt-2 text-gray-500 max-w-md text-center">
-              These buttons demonstrates bad INP. When clicked, it will freeze
-              the UI for {buttonDelay} ms before responding.
+            <p className="text-sm p-4 text-gray-400 max-w-md text-center mx-auto">
+              These buttons demonstrate different levels of INP. When clicked,
+              they will freeze the UI for the specified duration before
+              responding.
             </p>
           </div>
         </div>
@@ -75,12 +74,12 @@ function App() {
         <div className="mt-8 text-center text-white">
           <p>Adjust delays using URL parameters:</p>
           <code className="bg-gray-700 px-2 py-1 rounded">
-            ?imageDelay=3000&buttonDelay=500&skeleton=true
+            ?imageDelay=3000&skeleton=true
           </code>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default App;
