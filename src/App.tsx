@@ -54,13 +54,13 @@ function App() {
             </div>
 
             <div className="p-6">
-              <BadINPButton testId={"inp-button"} delay={buttonDelay} />
+              <BadINPButton testId={"inp-button-low"} delay={50} />
             </div>
             <div className="p-6">
-              <BadINPButton testId={"inp-button-2"} delay={buttonDelay} />
+              <BadINPButton testId={"inp-button-med"} delay={300} />
             </div>
             <div className="p-6">
-              <BadINPButton testId={"inp-button-3"} delay={buttonDelay} />
+              <BadINPButton testId={"inp-button-high"} delay={800} />
             </div>
             <p className="mt-4 text-center text-white">
               Button delay: {buttonDelay}ms
