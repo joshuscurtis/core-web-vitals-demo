@@ -31,8 +31,10 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-900 py-6 flex flex-col justify-center items-center">
       <div className="w-full max-w-4xl px-4">
-        <h1 className="text-4xl font-bold text-white text-center mb-8">Web Vitals Demo</h1>
-        
+        <h1 className="text-4xl font-bold text-white text-center mb-8">
+          Web Vitals Demo
+        </h1>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-4">
@@ -50,12 +52,23 @@ function App() {
             <div className="bg-gradient-to-r from-purple-600 to-pink-700 p-4">
               <h2 className="text-2xl font-bold text-white">INP Demo</h2>
             </div>
+
             <div className="p-6">
-              <BadINPButton delay={buttonDelay} />
-              <p className="mt-4 text-center text-white">
-                Button delay: {buttonDelay}ms
-              </p>
+              <BadINPButton testId={"inp-button"} delay={buttonDelay} />
             </div>
+            <div className="p-6">
+              <BadINPButton testId={"inp-button-2"} delay={buttonDelay} />
+            </div>
+            <div className="p-6">
+              <BadINPButton testId={"inp-button-3"} delay={buttonDelay} />
+            </div>
+            <p className="mt-4 text-center text-white">
+              Button delay: {buttonDelay}ms
+            </p>
+            <p className="text-sm pt-2 text-gray-500 max-w-md text-center">
+              These buttons demonstrates bad INP. When clicked, it will freeze
+              the UI for {buttonDelay} ms before responding.
+            </p>
           </div>
         </div>
 

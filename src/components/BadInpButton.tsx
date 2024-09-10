@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-const BadINPButton = (props: { delay: number }) => {
-  const { delay } = props;
+const BadINPButton = (props: { delay: number; testId: string }) => {
+  const { delay, testId } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState("");
 
@@ -24,20 +24,16 @@ const BadINPButton = (props: { delay: number }) => {
       <button
         onClick={handleClick}
         disabled={isLoading}
-        data-testid="inp-button"
+        data-testid={testId}
         className={`px-4 py-2 rounded-md text-white font-semibold ${
           isLoading
             ? "bg-gray-400 cursor-not-allowed"
             : "bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
         }`}
       >
-        {isLoading ? "Processing..." : "Click me (Bad INP)"}
+        {isLoading ? "Processing..." : `Click me (testId: ${testId})`}
       </button>
       {result && <p className="text-green-500">{result}</p>}
-      <p className="text-sm text-gray-500 max-w-md text-center">
-        This button demonstrates bad INP. When clicked, it will freeze the UI
-        for {delay} ms before responding.
-      </p>
     </div>
   );
 };
