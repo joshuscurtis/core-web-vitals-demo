@@ -54,7 +54,7 @@ function App() {
             </div>
 
             <div className="p-6">
-              <BadINPButton testId={"inp-button-low"} delay={50} />
+              <BadINPButton testId={"inp-button-low"} delay={5} />
             </div>
             <div className="p-6">
               <BadINPButton testId={"inp-button-med"} delay={300} />
