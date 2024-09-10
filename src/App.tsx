@@ -1,24 +1,28 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import DelayedImage from "./components/DelayedImage";
+import BadINPButton from "./components/BadINPButton";
 
-import BadINPButton from "./components/BadInpButton";
+interface DelayedImageProps {
+  delay: number;
+  showSkeleton: boolean;
+}
 
-const App = () => {
-  const [imageDelay, setImageDelay] = useState(2000);
-  const [showSkeleton, setShowSkeleton] = useState(false);
+const App: React.FC = () => {
+  const [imageDelay, setImageDelay] = useState<number>(2000);
+  const [showSkeleton, setShowSkeleton] = useState<boolean>(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const imageDelay = params.get("imageDelay");
-    const skeleton = params.get("skeleton");
+    const imageDelayParam = params.get("imageDelay");
+    const skeletonParam = params.get("skeleton");
 
-    if (imageDelay) {
-      const parsedDelay = parseInt(imageDelay, 10);
+    if (imageDelayParam) {
+      const parsedDelay = parseInt(imageDelayParam, 10);
       if (!isNaN(parsedDelay) && parsedDelay >= 0) {
         setImageDelay(parsedDelay);
       }
     }
-    setShowSkeleton(skeleton === "true");
+    setShowSkeleton(skeletonParam === "true");
   }, []);
 
   return (
@@ -48,19 +52,19 @@ const App = () => {
 
             <div className="p-6 space-y-4">
               <BadINPButton
-                testId="inp-button-good"
+                testId="inp-button-low"
                 delay={50}
                 label="Good INP (50ms)"
               />
               <BadINPButton
-                testId="inp-button-needs-improvement"
-                delay={200}
-                label="Needs Improvement INP (200ms)"
+                testId="inp-button-med"
+                delay={300}
+                label="Needs Improvement INP (300ms)"
               />
               <BadINPButton
-                testId="inp-button-poor"
-                delay={500}
-                label="Poor INP (500ms)"
+                testId="inp-button-high"
+                delay={600}
+                label="Poor INP (600ms)"
               />
             </div>
             <p className="text-sm p-4 text-gray-400 max-w-md text-center mx-auto">

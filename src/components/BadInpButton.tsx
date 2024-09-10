@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
 
-const BadINPButton = ({ delay, testId, label }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState("");
+interface BadINPButtonProps {
+  delay: number;
+  testId: string;
+  label: string;
+}
+
+const BadINPButton: React.FC<BadINPButtonProps> = ({ delay, testId, label }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [result, setResult] = useState<string>("");
 
   const handleClick = () => {
     setIsLoading(true);
@@ -26,10 +32,8 @@ const BadINPButton = ({ delay, testId, label }) => {
   }, [result]);
 
   const getButtonColor = () => {
-    if (delay <= 100)
-      return "bg-green-500 hover:bg-green-600 active:bg-green-700";
-    if (delay <= 300)
-      return "bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700";
+    if (delay <= 100) return "bg-green-500 hover:bg-green-600 active:bg-green-700";
+    if (delay <= 300) return "bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700";
     return "bg-red-500 hover:bg-red-600 active:bg-red-700";
   };
 
@@ -40,7 +44,9 @@ const BadINPButton = ({ delay, testId, label }) => {
         disabled={isLoading}
         data-testid={testId}
         className={`w-full px-4 py-2 rounded-md text-white font-semibold transition-colors duration-150 ${
-          isLoading ? "bg-gray-400 cursor-not-allowed" : getButtonColor()
+          isLoading
+            ? "bg-gray-400 cursor-not-allowed"
+            : getButtonColor()
         }`}
       >
         {isLoading ? "Processing..." : label}
