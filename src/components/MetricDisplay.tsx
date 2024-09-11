@@ -30,12 +30,15 @@ const MetricsDisplay: React.FC<MetricsDisplayProps> = ({ thresholds }) => {
       }));
     };
 
-    onCLS((metric) => updateMetric('cls', metric.value), { reportAllChanges: true });
-    onFID((metric) => updateMetric('fid', metric.value));
-    onLCP((metric) => updateMetric('lcp', metric.value), { reportAllChanges: true });
-    onTTFB((metric) => updateMetric('ttfb', metric.value));
-    onINP((metric) => updateMetric('inp', metric.value), { reportAllChanges: true });
-
+    onCLS((metric) => updateMetric("cls", metric.value), {
+      reportAllChanges: true,
+    });
+    onFID((metric) => updateMetric("fid", metric.value));
+    onLCP((metric) => updateMetric("lcp", metric.value));
+    onTTFB((metric) => updateMetric("ttfb", metric.value));
+    onINP((metric) => updateMetric("inp", metric.value), {
+      reportAllChanges: true,
+    });
   }, []);
 
   const getStatusColor = (value: number, threshold: number) => {

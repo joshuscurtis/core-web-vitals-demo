@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import DelayedImage from "./components/DelayedImage";
 import BadINPButton from "./components/BadInpButton";
-import MetricsDisplay from "./components/MetricDisplay";
-import ThresholdConfigurator from "./components/ThresholdConfigurator";
+import FloatingMetricsWidget from "./components/FloatingWidget";
+import { onCLS, onLCP, onTTFB, onINP } from "web-vitals";
 
 const App: React.FC = () => {
   const [imageDelay, setImageDelay] = useState<number>(2000);
@@ -14,6 +14,36 @@ const App: React.FC = () => {
     ttfb: 600,
     inp: 200,
   });
+
+  const [cwvMetrics, setcwvMetrics] = useState({
+    lcp: 0,
+    cls: 0,
+    ttfb: 0,
+    inp: 0,
+  });
+
+  useEffect(() => {
+    const updateMetric = (
+      metricName: keyof typeof cwvMetrics,
+      value: number
+    ) => {
+      setcwvMetrics((prevMetrics) => ({
+        ...prevMetrics,
+        [metricName]: value,
+      }));
+    };
+
+    onCLS((metric: { value: number }) => updateMetric("cls", metric.value), {
+      reportAllChanges: true,
+    });
+    onLCP((metric: { value: number }) => updateMetric("lcp", metric.value), {
+      reportAllChanges: true,
+    });
+    onTTFB((metric: { value: number }) => updateMetric("ttfb", metric.value));
+    onINP((metric: { value: number }) => updateMetric("inp", metric.value), {
+      reportAllChanges: true,
+    });
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -78,28 +108,8 @@ const App: React.FC = () => {
             </p>
           </div>
         </div>
-
-        <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-green-600 to-teal-700 p-4">
-            <h2 className="text-2xl font-bold text-white">Metrics Display</h2>
-          </div>
-          <div className="p-6">
-            <MetricsDisplay thresholds={thresholds} />
-          </div>
-        </div>
-
-        <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-          <div className="bg-gradient-to-r from-yellow-600 to-orange-700 p-4">
-            <h2 className="text-2xl font-bold text-white">
-              Threshold Configurator
-            </h2>
-          </div>
-          <div className="p-6">
-            <ThresholdConfigurator
-              thresholds={thresholds}
-              setThresholds={setThresholds}
-            />
-          </div>
+        <div className="p-6">
+          <FloatingMetricsWidget metrics={cwvMetrics} thresholds={thresholds} />
         </div>
 
         <div className="mt-8 text-center text-white">
