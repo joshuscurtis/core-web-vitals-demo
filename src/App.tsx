@@ -7,13 +7,13 @@ import { onCLS, onLCP, onTTFB, onINP } from "web-vitals";
 const App: React.FC = () => {
   const [imageDelay, setImageDelay] = useState<number>(2000);
   const [showSkeleton, setShowSkeleton] = useState<boolean>(false);
-  const [thresholds, setThresholds] = useState({
+  const thresholds = {
     lcp: 2500,
     fid: 100,
     cls: 0.1,
     ttfb: 600,
     inp: 200,
-  });
+  };
 
   const [cwvMetrics, setcwvMetrics] = useState({
     lcp: 0,
