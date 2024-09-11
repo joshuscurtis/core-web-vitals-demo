@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import DelayedImage from "./components/DelayedImage";
-import BadINPButton from "./components/BadINPButton";
-
-interface DelayedImageProps {
-  delay: number;
-  showSkeleton: boolean;
-}
+import BadINPButton from "./components/BadInpButton";
+import MetricsDisplay from "./components/MetricDisplay";
+import ThresholdConfigurator from "./components/ThresholdConfigurator";
 
 const App: React.FC = () => {
   const [imageDelay, setImageDelay] = useState<number>(2000);
   const [showSkeleton, setShowSkeleton] = useState<boolean>(false);
+  const [thresholds, setThresholds] = useState({
+    lcp: 2500,
+    fid: 100,
+    cls: 0.1,
+    ttfb: 600,
+    inp: 200,
+  });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -27,12 +31,12 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 py-6 flex flex-col justify-center items-center">
-      <div className="w-full max-w-4xl px-4">
+      <div className="w-full max-w-6xl px-4">
         <h1 className="text-4xl font-bold text-white text-center mb-8">
-          Web Vitals Demo
+          Web Vitals Demo for SiteSpeedTest Workshop
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-4">
               <h2 className="text-2xl font-bold text-white">CLS & LCP Demo</h2>
@@ -72,6 +76,29 @@ const App: React.FC = () => {
               they will freeze the UI for the specified duration before
               responding.
             </p>
+          </div>
+        </div>
+
+        <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden mb-8">
+          <div className="bg-gradient-to-r from-green-600 to-teal-700 p-4">
+            <h2 className="text-2xl font-bold text-white">Metrics Display</h2>
+          </div>
+          <div className="p-6">
+            <MetricsDisplay thresholds={thresholds} />
+          </div>
+        </div>
+
+        <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+          <div className="bg-gradient-to-r from-yellow-600 to-orange-700 p-4">
+            <h2 className="text-2xl font-bold text-white">
+              Threshold Configurator
+            </h2>
+          </div>
+          <div className="p-6">
+            <ThresholdConfigurator
+              thresholds={thresholds}
+              setThresholds={setThresholds}
+            />
           </div>
         </div>
 
