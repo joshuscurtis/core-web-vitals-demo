@@ -15,21 +15,22 @@ const LCPDemo: React.FC<LCPDemoProps> = ({ delay }) => {
   }, [delay]);
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-white">LCP Demo</h3>
+    <div className="space-y-4" id="lcp">
       <p className="text-gray-300">
         This image will load after a {delay}ms delay, simulating a slow LCP:
       </p>
       {showImage ? (
         <img
-          src="/600x800.svg"
+          src="/400x500.svg"
           alt="Large Contentful Paint Example"
-          className="w-full h-auto rounded-lg shadow-md"
-          width={800}
-          height={600}
+          className="rounded-lg shadow-md"
+          style={{ width: "400px", height: "500px" }}
         />
       ) : (
-        <div className="w-full h-[600px] bg-gray-700 rounded-lg animate-pulse"></div>
+        <div
+          className="bg-gray-700 rounded-lg animate-pulse"
+          style={{ width: "400px", height: "500px" }}
+        ></div>
       )}
       <p className="text-sm text-gray-400 italic">
         {showImage

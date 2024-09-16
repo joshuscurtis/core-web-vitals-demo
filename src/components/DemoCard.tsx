@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 
 interface DemoCardProps {
-  title: string;
+  title: React.ReactNode;
   gradientClasses: string;
   children: React.ReactNode;
   icon: React.ReactNode;
@@ -20,7 +20,7 @@ const DemoCard: React.FC<DemoCardProps> = ({
     className="bg-gray-800 bg-opacity-50 rounded-2xl shadow-2xl overflow-hidden border border-gray-700"
   >
     <div className={`bg-gradient-to-r ${gradientClasses} p-6`}>
-      <h2 className="text-3xl font-bold text-white flex items-center">
+      <h2 className="text-2xl font-bold text-white flex items-center">
         {icon}
         <span className="ml-3">{title}</span>
       </h2>

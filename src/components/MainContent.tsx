@@ -2,7 +2,7 @@ import React from "react";
 import { Eye, RotateCw, Sliders } from "lucide-react";
 import DemoCard from "./DemoCard";
 import LCPDemo from "./LCPDemo";
-import CLSDemo from "./CLSDemo";
+import CLSDemo, { CLSLevels } from "./CLSDemo";
 import BadINPButton from "./BadInpButton";
 import FloatingMetricsWidget from "./FloatingWidget";
 import { CWVMetrics, Thresholds } from "../types";
@@ -10,27 +10,27 @@ import { CWVMetrics, Thresholds } from "../types";
 interface MainContentProps {
   lcpDelay: number;
   setLcpDelay: (delay: number) => void;
-  clsDelay: number;
-  setClsDelay: (delay: number) => void;
-  clsSeverity: number;
-  setClsSeverity: (severity: number) => void;
-  showClsSkeleton: boolean;
-  setShowClsSkeleton: (show: boolean) => void;
   cwvMetrics: CWVMetrics;
   key: number;
   MAX_DELAY: number;
   THRESHOLDS: Thresholds;
 }
 
+function handleSliderChange(
+  e: React.ChangeEvent<HTMLInputElement>,
+  setLcpDelay: (delay: number) => void
+) {
+  const value = Number(e.target.value);
+  setLcpDelay(value);
+  // set the url parameter
+  const url = new URL(window.location.href);
+  url.searchParams.set("lcpDelay", value.toString());
+  window.history.replaceState({}, "", url.toString());
+}
+
 const MainContent: React.FC<MainContentProps> = ({
   lcpDelay,
   setLcpDelay,
-  clsDelay,
-  setClsDelay,
-  clsSeverity,
-  setClsSeverity,
-  showClsSkeleton,
-  setShowClsSkeleton,
   cwvMetrics,
   key,
   MAX_DELAY,
@@ -56,7 +56,9 @@ const MainContent: React.FC<MainContentProps> = ({
                 min="0"
                 max={MAX_DELAY}
                 value={lcpDelay}
-                onChange={(e) => setLcpDelay(Number(e.target.value))}
+                onChange={(e) => {
+                  handleSliderChange(e, setLcpDelay);
+                }}
                 className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer"
               />
             </label>
@@ -68,51 +70,7 @@ const MainContent: React.FC<MainContentProps> = ({
           gradientClasses="from-purple-600 to-pink-600"
           icon={<RotateCw className="w-6 h-6" />}
         >
-          <CLSDemo 
-            key={`cls-${key}`} 
-            delay={clsDelay} 
-            showSkeleton={showClsSkeleton} 
-            severity={clsSeverity}
-          />
-          <div className="mt-6 space-y-4">
-            <label className="block text-gray-200">
-              <div className="flex items-center mb-2">
-                <Sliders className="w-5 h-5 mr-2" />
-                <span>CLS Delay: {clsDelay}ms</span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max={MAX_DELAY}
-                value={clsDelay}
-                onChange={(e) => setClsDelay(Number(e.target.value))}
-                className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer"
-              />
-            </label>
-            <label className="block text-gray-200">
-              <div className="flex items-center mb-2">
-                <Sliders className="w-5 h-5 mr-2" />
-                <span>CLS Severity: {clsSeverity}%</span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={clsSeverity}
-                onChange={(e) => setClsSeverity(Number(e.target.value))}
-                className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer"
-              />
-            </label>
-            <label className="flex items-center text-gray-200">
-              <input
-                type="checkbox"
-                checked={showClsSkeleton}
-                onChange={(e) => setShowClsSkeleton(e.target.checked)}
-                className="form-checkbox h-5 w-5 text-purple-500 rounded focus:ring-purple-400 border-gray-500 bg-gray-700"
-              />
-              <span className="ml-2">Show Skeleton</span>
-            </label>
-          </div>
+          <CLSDemo key={`cls-${key}`} initialLevel={CLSLevels.high} />
         </DemoCard>
       </div>
 
@@ -139,9 +97,8 @@ const MainContent: React.FC<MainContentProps> = ({
           />
         </div>
         <p className="mt-4 text-sm text-gray-300 max-w-md text-center mx-auto">
-          These buttons demonstrate different levels of INP. When clicked,
-          they will freeze the UI for the specified duration before
-          responding.
+          These buttons demonstrate different levels of INP. When clicked, they
+          will freeze the UI for the specified duration before responding.
         </p>
       </DemoCard>
 
@@ -151,7 +108,7 @@ const MainContent: React.FC<MainContentProps> = ({
         <p className="text-gray-300">
           Adjust parameters using URL:
           <code className="bg-gray-700 px-3 py-1 rounded-full ml-2 text-sm">
-            ?lcpDelay=3000&clsDelay=2000&clsSkeleton=true&clsSeverity=75
+            ?lcpDelay=3000&clsLevel=bad
           </code>
         </p>
       </div>

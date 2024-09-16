@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MainContent from "./components/MainContent";
 import { CWVMetrics } from "./types";
+import { CLSLevel, CLSLevels } from "./components/CLSDemo";
 
 const THRESHOLDS = {
   lcp: 2500,
@@ -16,15 +17,11 @@ const THRESHOLDS = {
 };
 
 const DEFAULT_LCP_DELAY = 2000;
-const DEFAULT_CLS_DELAY = 1500;
-const DEFAULT_CLS_SEVERITY = 50;
-const MAX_DELAY = 5000;
+const MAX_DELAY = 8000;
 
 const App: React.FC = () => {
   const [lcpDelay, setLcpDelay] = useState<number>(DEFAULT_LCP_DELAY);
-  const [clsDelay, setClsDelay] = useState<number>(DEFAULT_CLS_DELAY);
-  const [clsSeverity, setClsSeverity] = useState<number>(DEFAULT_CLS_SEVERITY);
-  const [showClsSkeleton, setShowClsSkeleton] = useState<boolean>(false);
+  const [clsLevel, setClsLevel] = useState<CLSLevel>(CLSLevels.high);
   const [cwvMetrics, setCWVMetrics] = useState<CWVMetrics>({
     lcp: 0,
     cls: 0,
@@ -57,9 +54,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const lcpDelayParam = params.get("lcpDelay");
-    const clsDelayParam = params.get("clsDelay");
-    const clsSkeletonParam = params.get("clsSkeleton");
-    const clsSeverityParam = params.get("clsSeverity");
+    const clsLevelParam = params.get("clsLevel");
 
     if (lcpDelayParam) {
       const parsedDelay = parseInt(lcpDelayParam, 10);
@@ -67,23 +62,11 @@ const App: React.FC = () => {
         setLcpDelay(parsedDelay);
       }
     }
-    if (clsDelayParam) {
-      const parsedDelay = parseInt(clsDelayParam, 10);
-      if (!isNaN(parsedDelay) && parsedDelay >= 0 && parsedDelay <= MAX_DELAY) {
-        setClsDelay(parsedDelay);
+    if (clsLevelParam) {
+      if (clsLevelParam in CLSLevels) {
+        setClsLevel(clsLevelParam as CLSLevel);
       }
     }
-    if (clsSeverityParam) {
-      const parsedSeverity = parseInt(clsSeverityParam, 10);
-      if (
-        !isNaN(parsedSeverity) &&
-        parsedSeverity >= 0 &&
-        parsedSeverity <= 100
-      ) {
-        setClsSeverity(parsedSeverity);
-      }
-    }
-    setShowClsSkeleton(clsSkeletonParam === "true");
   }, []);
 
   const handleReload = () => {
@@ -96,9 +79,7 @@ const App: React.FC = () => {
     });
     const params = new URLSearchParams();
     params.set("lcpDelay", lcpDelay.toString());
-    params.set("clsDelay", clsDelay.toString());
-    params.set("clsSkeleton", showClsSkeleton.toString());
-    params.set("clsSeverity", clsSeverity.toString());
+    params.set("clsLevel", clsLevel);
     window.history.replaceState(
       {},
       "",
@@ -113,12 +94,6 @@ const App: React.FC = () => {
       <MainContent
         lcpDelay={lcpDelay}
         setLcpDelay={setLcpDelay}
-        clsDelay={clsDelay}
-        setClsDelay={setClsDelay}
-        clsSeverity={clsSeverity}
-        setClsSeverity={setClsSeverity}
-        showClsSkeleton={showClsSkeleton}
-        setShowClsSkeleton={setShowClsSkeleton}
         cwvMetrics={cwvMetrics}
         key={key}
         MAX_DELAY={MAX_DELAY}
