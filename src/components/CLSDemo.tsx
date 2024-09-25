@@ -94,9 +94,7 @@ const CLSDemo: React.FC<CLSDemoProps> = ({ initialLevel }) => {
           onClick={() => updateClsLevel(CLSLevels["medium"])}
           data-testid="cls-medium"
           className={`px-4 py-2 rounded ${
-            clsLevel === CLSLevels["medium"]
-              ? "bg-yellow-600"
-              : "bg-yellow-800"
+            clsLevel === CLSLevels["medium"] ? "bg-yellow-600" : "bg-yellow-800"
           } text-white`}
         >
           medium

@@ -2,9 +2,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { onCLS, onLCP, onTTFB, onINP, Metric } from "web-vitals";
 import { RefreshCw } from "lucide-react";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MainContent from "./components/MainContent";
+import WhereToGo from "./components/WhereToGo";
 import { CWVMetrics } from "./types";
 import { CLSLevel, CLSLevels } from "./components/CLSDemo";
 
@@ -89,34 +91,51 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100">
-      <Header />
-      <MainContent
-        lcpDelay={lcpDelay}
-        setLcpDelay={setLcpDelay}
-        cwvMetrics={cwvMetrics}
-        key={key}
-        MAX_DELAY={MAX_DELAY}
-        THRESHOLDS={THRESHOLDS}
-      />
-      <Footer />
-      <AnimatePresence>
-        <motion.button
-          key="reload-button"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 50 }}
-          transition={{ duration: 0.5 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleReload}
-          className="fixed bottom-6 right-6 bg-gradient-to-r from-teal-500 to-blue-500 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition duration-300 ease-in-out flex items-center space-x-2"
-        >
-          <RefreshCw size={20} />
-          <span>Reload Demo</span>
-        </motion.button>
-      </AnimatePresence>
-    </div>
+    <Router>
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100">
+        <Header />
+        <nav className="bg-gray-800 p-4">
+          <ul className="flex space-x-4">
+            <li>
+              <Link to="/" className="text-white hover:text-gray-300">Home</Link>
+            </li>
+            <li>
+              <Link to="/wheretogo" className="text-white hover:text-gray-300">Where to Go</Link>
+            </li>
+          </ul>
+        </nav>
+        <Routes>
+          <Route path="/" element={
+            <MainContent
+              lcpDelay={lcpDelay}
+              setLcpDelay={setLcpDelay}
+              cwvMetrics={cwvMetrics}
+              key={key}
+              MAX_DELAY={MAX_DELAY}
+              THRESHOLDS={THRESHOLDS}
+            />
+          } />
+          <Route path="/wheretogo" element={<WhereToGo />} />
+        </Routes>
+        <Footer />
+        <AnimatePresence>
+          <motion.button
+            key="reload-button"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ duration: 0.5 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleReload}
+            className="fixed bottom-6 right-6 bg-gradient-to-r from-teal-500 to-blue-500 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition duration-300 ease-in-out flex items-center space-x-2"
+          >
+            <RefreshCw size={20} />
+            <span>Reload Demo</span>
+          </motion.button>
+        </AnimatePresence>
+      </div>
+    </Router>
   );
 };
 
