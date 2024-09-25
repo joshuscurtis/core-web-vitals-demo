@@ -1,4 +1,4 @@
-import { CityOption } from "./WhereToGo";
+import { CityOption } from "./WhereIsTheSun";
 
 const generateWorldCities = (): CityOption[] => {
   const cities: CityOption[] = [

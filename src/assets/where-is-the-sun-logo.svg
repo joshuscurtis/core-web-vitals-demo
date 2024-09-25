@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <!-- Sun -->
+  <circle cx="150" cy="80" r="40" fill="#FDB813"/>
+  <g fill="none" stroke="#FDB813" stroke-width="2">
+    <path d="M150 30V10M150 150v-20M100 80H80M220 80h-20M115 45l-14-14M199 45l14-14M115 115l-14 14M199 115l14 14"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="150" y="180" font-family="Arial, sans-serif" font-size="24" fill="#FDB813" text-anchor="middle">
+    Where Is The Sun?
+  </text>
+</svg>

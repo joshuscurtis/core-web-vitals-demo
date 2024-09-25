@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MainContent from "./components/MainContent";
-import WhereToGo from "./components/WhereToGo";
+import WhereIsTheSun from "./components/WhereIsTheSun";
 import { CWVMetrics } from "./types";
 import { CLSLevel, CLSLevels } from "./components/CLSDemo";
 
@@ -97,25 +97,35 @@ const App: React.FC = () => {
         <nav className="bg-gray-800 p-4">
           <ul className="flex space-x-4">
             <li>
-              <Link to="/" className="text-white hover:text-gray-300">Home</Link>
+              <Link to="/" className="text-white hover:text-gray-300">
+                Home
+              </Link>
             </li>
             <li>
-              <Link to="/wheretogo" className="text-white hover:text-gray-300">Where to Go</Link>
+              <Link
+                to="/whereisthesun"
+                className="text-white hover:text-gray-300"
+              >
+                Where Is The Sun?
+              </Link>
             </li>
           </ul>
         </nav>
         <Routes>
-          <Route path="/" element={
-            <MainContent
-              lcpDelay={lcpDelay}
-              setLcpDelay={setLcpDelay}
-              cwvMetrics={cwvMetrics}
-              key={key}
-              MAX_DELAY={MAX_DELAY}
-              THRESHOLDS={THRESHOLDS}
-            />
-          } />
-          <Route path="/wheretogo" element={<WhereToGo />} />
+          <Route
+            path="/"
+            element={
+              <MainContent
+                lcpDelay={lcpDelay}
+                setLcpDelay={setLcpDelay}
+                cwvMetrics={cwvMetrics}
+                key={key}
+                MAX_DELAY={MAX_DELAY}
+                THRESHOLDS={THRESHOLDS}
+              />
+            }
+          />
+          <Route path="/whereisthesun" element={<WhereIsTheSun />} />
         </Routes>
         <Footer />
         <AnimatePresence>

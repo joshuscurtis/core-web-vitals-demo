@@ -39,13 +39,14 @@ export interface CityOption {
 
 const citiesList: CityOption[] = worldCities;
 
-const WhereToGo: React.FC = () => {
+const WhereIsTheSun: React.FC = () => {
   const [selectedCities, setSelectedCities] = useState<CityOption[]>([]);
   const [weatherData, setWeatherData] = useState<CityWeather[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [useFiveYearAverage, setUseFiveYearAverage] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
 
+  // Effect to parse URL parameters on initial load
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const cityValues = params.get("cities")?.split(",") || [];
@@ -58,6 +59,7 @@ const WhereToGo: React.FC = () => {
     setUseFiveYearAverage(fiveYearAvg);
   }, []);
 
+  // Effect to fetch weather data when selectedCities or useFiveYearAverage changes
   useEffect(() => {
     const fetchData = async () => {
       if (selectedCities.length === 0) return;
@@ -130,22 +132,29 @@ const WhereToGo: React.FC = () => {
     };
 
     fetchData();
+  }, [selectedCities, useFiveYearAverage]);
+
+  // Effect to update URL when selectedCities or useFiveYearAverage changes
+  useEffect(() => {
+    const updateUrl = () => {
+      const params = new URLSearchParams();
+      if (selectedCities.length > 0) {
+        params.set(
+          "cities",
+          selectedCities.map((city) => city.value).join(",")
+        );
+      }
+      params.set("fiveYearAvg", useFiveYearAverage.toString());
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      window.history.replaceState({}, "", newUrl);
+      setShareUrl(window.location.href);
+    };
+
     updateUrl();
   }, [selectedCities, useFiveYearAverage]);
 
   const handleCityChange = (selected: readonly CityOption[] | null) => {
     setSelectedCities(selected ? [...selected] : []);
-  };
-
-  const updateUrl = () => {
-    const params = new URLSearchParams();
-    if (selectedCities.length > 0) {
-      params.set("cities", selectedCities.map((city) => city.value).join(","));
-    }
-    params.set("fiveYearAvg", useFiveYearAverage.toString());
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.replaceState({}, "", newUrl);
-    setShareUrl(window.location.href);
   };
 
   const handleShareClick = () => {
@@ -212,7 +221,7 @@ const WhereToGo: React.FC = () => {
         className="max-w-6xl mx-auto"
       >
         <h1 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
-          Where to Go: Weather Comparison
+          Where Is The Sun?
         </h1>
         <div className="mb-8">
           <Select<CityOption, true>
@@ -329,9 +338,9 @@ const WhereToGo: React.FC = () => {
                       {weatherData.map((city) => (
                         <React.Fragment key={`${city.city}, ${city.country}`}>
                           <td className="border border-gray-600 p-2">
-                            {city.monthlyData[monthIndex].avgTemperature.toFixed(
-                              1
-                            )}
+                            {city.monthlyData[
+                              monthIndex
+                            ].avgTemperature.toFixed(1)}
                           </td>
                           <td className="border border-gray-600 p-2">
                             {city.monthlyData[
@@ -357,4 +366,4 @@ const WhereToGo: React.FC = () => {
   );
 };
 
-export default WhereToGo;
+export default WhereIsTheSun;
