@@ -164,7 +164,15 @@ const generateWorldCities = (): CityOption[] => {
     generateCity("Amsterdam", "Netherlands", 52.3676, 4.9041),
     generateCity("Vienna", "Austria", 48.2082, 16.3738),
     generateCity("Madrid", "Spain", 40.4168, -3.7038),
-    generateCity("Stockholm", "Sweden", 59.3293, 18.0686)
+    generateCity("Stockholm", "Sweden", 59.3293, 18.0686),
+    generateCity("Athens", "Greece", 37.9838, 23.7275),
+    generateCity("Dublin", "Ireland", 53.3498, -6.2603),
+    generateCity("Prague", "Czech Republic", 50.0755, 14.4378),
+    generateCity("Warsaw", "Poland", 52.2297, 21.0122),
+    generateCity("Budapest", "Hungary", 47.4979, 19.0402),
+    generateCity("Lisbon", "Portugal", 38.7223, -9.1393),
+    generateCity("Zurich", "Switzerland", 47.3769, 8.5417),
+    generateCity("Aya Napa", "Cyprus", 34.9823, 33.9958)
   );
 
   // Add more Asian cities

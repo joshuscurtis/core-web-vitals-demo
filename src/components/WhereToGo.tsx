@@ -11,6 +11,10 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { motion } from "framer-motion";
+import { Sun, Cloud, Droplets, MapPin, Share2 } from "lucide-react";
+
+// Assuming worldCities is imported from a separate file
 import { worldCities } from "./cities";
 
 export interface CityWeather {
@@ -40,6 +44,19 @@ const WhereToGo: React.FC = () => {
   const [weatherData, setWeatherData] = useState<CityWeather[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [useFiveYearAverage, setUseFiveYearAverage] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const cityValues = params.get("cities")?.split(",") || [];
+    const fiveYearAvg = params.get("fiveYearAvg") === "true";
+
+    const initialCities = citiesList.filter((city) =>
+      cityValues.includes(city.value)
+    );
+    setSelectedCities(initialCities);
+    setUseFiveYearAverage(fiveYearAvg);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -113,10 +130,28 @@ const WhereToGo: React.FC = () => {
     };
 
     fetchData();
+    updateUrl();
   }, [selectedCities, useFiveYearAverage]);
 
   const handleCityChange = (selected: readonly CityOption[] | null) => {
     setSelectedCities(selected ? [...selected] : []);
+  };
+
+  const updateUrl = () => {
+    const params = new URLSearchParams();
+    if (selectedCities.length > 0) {
+      params.set("cities", selectedCities.map((city) => city.value).join(","));
+    }
+    params.set("fiveYearAvg", useFiveYearAverage.toString());
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState({}, "", newUrl);
+    setShareUrl(window.location.href);
+  };
+
+  const handleShareClick = () => {
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      alert("URL copied to clipboard!");
+    });
   };
 
   const prepareChartData = (
@@ -142,12 +177,19 @@ const WhereToGo: React.FC = () => {
   ) => {
     const chartData = prepareChartData(data, dataKey);
     return (
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={400}>
         <BarChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip />
+          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+          <XAxis dataKey="month" stroke="#9CA3AF" />
+          <YAxis stroke="#9CA3AF" />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "#1F2937",
+              border: "none",
+              borderRadius: "8px",
+              color: "#F3F4F6",
+            }}
+          />
           <Legend />
           {data.map((city, index) => (
             <Bar
@@ -162,90 +204,155 @@ const WhereToGo: React.FC = () => {
   };
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">
-        Where to Go: Weather Comparison
-      </h1>
-      <div className="mb-6">
-        <Select<CityOption, true>
-          isMulti
-          options={citiesList}
-          onChange={handleCityChange}
-          placeholder="Search and select cities to compare..."
-          className="text-gray-800"
-        />
-      </div>
-      <div className="mb-6">
-        <label className="inline-flex items-center">
-          <input
-            type="checkbox"
-            className="form-checkbox"
-            checked={useFiveYearAverage}
-            onChange={(e) => setUseFiveYearAverage(e.target.checked)}
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100 p-8">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-6xl mx-auto"
+      >
+        <h1 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
+          Where to Go: Weather Comparison
+        </h1>
+        <div className="mb-8">
+          <Select<CityOption, true>
+            isMulti
+            options={citiesList}
+            onChange={handleCityChange}
+            value={selectedCities}
+            placeholder="Search and select cities to compare..."
+            className="text-gray-800"
+            styles={{
+              control: (base) => ({
+                ...base,
+                backgroundColor: "#374151",
+                borderColor: "#4B5563",
+              }),
+              menu: (base) => ({
+                ...base,
+                backgroundColor: "#374151",
+              }),
+              option: (base, state) => ({
+                ...base,
+                backgroundColor: state.isFocused ? "#4B5563" : "#374151",
+                color: "#F3F4F6",
+              }),
+              multiValue: (base) => ({
+                ...base,
+                backgroundColor: "#4B5563",
+              }),
+              multiValueLabel: (base) => ({
+                ...base,
+                color: "#F3F4F6",
+              }),
+              multiValueRemove: (base) => ({
+                ...base,
+                color: "#F3F4F6",
+                ":hover": {
+                  backgroundColor: "#6B7280",
+                },
+              }),
+            }}
           />
-          <span className="ml-2">
-            Use 5-year average (instead of last year's data)
-          </span>
-        </label>
-      </div>
-      {isLoading ? (
-        <div>Loading weather data...</div>
-      ) : weatherData.length > 0 ? (
-        <div>
-          <h2 className="text-2xl font-semibold mb-4">
-            Temperature Comparison (°C)
-          </h2>
-          {renderChart(weatherData, "avgTemperature")}
-          <h2 className="text-2xl font-semibold my-4">
-            Precipitation Comparison (mm)
-          </h2>
-          {renderChart(weatherData, "avgPrecipitation")}
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-300 mt-6">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border border-gray-300 p-2">Month</th>
-                  {weatherData.map((city) => (
-                    <React.Fragment key={`${city.city}, ${city.country}`}>
-                      <th className="border border-gray-300 p-2">
-                        {city.city}, {city.country} Temp (°C)
-                      </th>
-                      <th className="border border-gray-300 p-2">
-                        {city.city}, {city.country} Precip (mm)
-                      </th>
-                    </React.Fragment>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {weatherData[0].monthlyData.map((_, monthIndex) => (
-                  <tr key={monthIndex}>
-                    <td className="border border-gray-300 p-2">
-                      {weatherData[0].monthlyData[monthIndex].month}
-                    </td>
+        </div>
+        <div className="mb-8 flex justify-between items-center">
+          <label className="inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              className="form-checkbox h-5 w-5 text-blue-500"
+              checked={useFiveYearAverage}
+              onChange={(e) => setUseFiveYearAverage(e.target.checked)}
+            />
+            <span className="ml-2 text-gray-300">
+              Use 5-year average (instead of last year's data)
+            </span>
+          </label>
+          <button
+            onClick={handleShareClick}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded inline-flex items-center"
+          >
+            <Share2 className="mr-2" size={18} />
+            Share
+          </button>
+        </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : weatherData.length > 0 ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+              <h2 className="text-2xl font-semibold mb-4 flex items-center">
+                <Sun className="mr-2 text-yellow-400" />
+                Temperature Comparison (°C)
+              </h2>
+              {renderChart(weatherData, "avgTemperature")}
+            </div>
+            <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+              <h2 className="text-2xl font-semibold mb-4 flex items-center">
+                <Cloud className="mr-2 text-blue-400" />
+                Precipitation Comparison (mm)
+              </h2>
+              {renderChart(weatherData, "avgPrecipitation")}
+            </div>
+            <div className="bg-gray-800 rounded-lg shadow-lg p-6 overflow-x-auto">
+              <h2 className="text-2xl font-semibold mb-4 flex items-center">
+                <MapPin className="mr-2 text-red-400" />
+                Detailed Weather Data
+              </h2>
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-gray-700">
+                    <th className="border border-gray-600 p-2">Month</th>
                     {weatherData.map((city) => (
                       <React.Fragment key={`${city.city}, ${city.country}`}>
-                        <td className="border border-gray-300 p-2">
-                          {city.monthlyData[monthIndex].avgTemperature.toFixed(
-                            1
-                          )}
-                        </td>
-                        <td className="border border-gray-300 p-2">
-                          {city.monthlyData[
-                            monthIndex
-                          ].avgPrecipitation.toFixed(1)}
-                        </td>
+                        <th className="border border-gray-600 p-2">
+                          {city.city}, {city.country} Temp (°C)
+                        </th>
+                        <th className="border border-gray-600 p-2">
+                          {city.city}, {city.country} Precip (mm)
+                        </th>
                       </React.Fragment>
                     ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {weatherData[0].monthlyData.map((_, monthIndex) => (
+                    <tr key={monthIndex} className="hover:bg-gray-700">
+                      <td className="border border-gray-600 p-2">
+                        {weatherData[0].monthlyData[monthIndex].month}
+                      </td>
+                      {weatherData.map((city) => (
+                        <React.Fragment key={`${city.city}, ${city.country}`}>
+                          <td className="border border-gray-600 p-2">
+                            {city.monthlyData[monthIndex].avgTemperature.toFixed(
+                              1
+                            )}
+                          </td>
+                          <td className="border border-gray-600 p-2">
+                            {city.monthlyData[
+                              monthIndex
+                            ].avgPrecipitation.toFixed(1)}
+                          </td>
+                        </React.Fragment>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
+        ) : (
+          <div className="text-center text-xl text-gray-400">
+            <Droplets className="inline-block mb-2" size={48} />
+            <p>Select cities to compare weather data.</p>
           </div>
-        </div>
-      ) : (
-        <div>Select cities to compare weather data.</div>
-      )}
+        )}
+      </motion.div>
     </div>
   );
 };
