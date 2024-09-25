@@ -1,7 +1,9 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
-  "routes": [
-    { "src": "/whereisthesun", "dest": "/" },
-    { "src": "/whereisthesun/(.*)", "dest": "/" }
-  ]
-}
+    "version": 2,
+    "routes": [
+      { "handle": "filesystem" },
+      { "src": "/whereisthesun", "dest": "/" },
+      { "src": "/whereisthesun/(.*)", "dest": "/" },
+      { "src": "/(.*)", "dest": "/index.html" }
+    ]
+  }
